@@ -70,8 +70,8 @@ struct CPU {
 
 	void reset(Mem &memory) {
 		// clear all the data and perform the boot process
-		PC = 0xFFFC;
-		SP = 0x0100;
+		PC = 0x1000;
+		SP = 0x1AA3;
 		clearflags(); // clear all the flags
 		A = X = Y = 0; // clear registers
 		memory.init();
@@ -84,7 +84,9 @@ struct CPU {
 		return data;
 	}
 
-	static constexpr Byte INS_LDA_IM = 0xA9;
+	static constexpr Byte LDA = 0xA9;
+	// stack pointer operations
+	static constexpr Byte TSX = 0xBA;
 
 	void exec(u32 cycles, Mem &memory) {
 		// execute <cycles> instructions in memory
@@ -92,9 +94,15 @@ struct CPU {
 			// the next instruction in memory is where PC tells us it is
 			Byte instr = fetchbyte(cycles, memory);
 			switch(instr) {
-				case INS_LDA_IM: {
+				case LDA: {
 					Byte val = fetchbyte(cycles, memory);
 					A = val;
+					Z = (A == 0);
+					N = (A & 0b10000000) > 0;
+				} break;
+				case TSX: {
+					Byte val = fetchbyte(cycles, memory);
+					X = this -> SP;
 					Z = (A == 0);
 					N = (A & 0b10000000) > 0;
 				} break;
@@ -106,6 +114,6 @@ struct CPU {
 	}
 
 	void printreg() {
-		printf("Reg A: 0x%x\nReg X: 0x%x\nReg Y: 0x%x\n", A, X, Y);
+		printf("Reg A: 0x%04X\nReg X: 0x%04X\nReg Y: 0x%04X\n", A, X, Y);
 	}
 };
