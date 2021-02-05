@@ -73,6 +73,10 @@ struct CPU {
 		printf("C: %d\nZ: %d\nI: %d\nD: %d\nB: %d\nV: %d\nN: %d\n", C, Z, I, D, B, V, N);
 	}
 
+	void printflagsc() {
+		printf("CZIDBVN\n%d%d%d%d%d%d%d\n", C, Z, I, D, B, V, N);
+	}
+
 	void reset(Mem &memory) {
 		// clear all the data and perform the boot process
 		PC = 0x1000;
