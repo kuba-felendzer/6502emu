@@ -145,7 +145,8 @@ struct CPU {
 				} break;
 				default: {
 					printf("Instruction not handled: %d", instr);
-				} cycles++;
+					cycles = 0;
+				} break;
 			}
 		}
 	}
