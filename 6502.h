@@ -69,6 +69,10 @@ struct CPU {
 		N = 0;
 	}
 
+	void printflags() {
+		printf("C: %d\nZ: %d\nI: %d\nD: %d\nB: %d\nV: %d\nN: %d\n", C, Z, I, D, B, V, N);
+	}
+
 	void reset(Mem &memory) {
 		// clear all the data and perform the boot process
 		PC = 0x1000;
@@ -85,15 +89,41 @@ struct CPU {
 		return data;
 	}
 
+	Byte readbyte(u32 &cycles, Mem memory, Byte addr) {
+		Byte jumpto = memory[addr];
+		Byte data = memory[jumpto];
+		cycles--;
+		return data;
+	}
+
+	Byte readbyte(u32 &cycles, Mem memory) {
+		Byte jumpto = memory[PC];
+		Byte data = memory[jumpto];
+		cycles--;
+		return data;
+	}
+
+	Byte readnextbyte(u32 &cycles, Mem memory) {
+		Byte data = memory[PC];
+		cycles--;
+		return data;
+	}
+
+	// register loading
 	instruction LDA = 0xA9;
 	instruction LDX = 0xA2;
 	instruction LDY = 0xA0;
+	// register comparison
+	instruction CMP = 0xC9;
+	instruction CPX = 0xE0;
+	instruction CPY = 0xC0;
 	// stack pointer operations
 	instruction TSX = 0xBA;
 	// flag operation
 	instruction CLC = 0x18;
 	instruction CLD = 0xD8;
 	instruction CLI = 0x58;
+	instruction CLV = 0xB8;
 
 	void exec(u32 cycles, Mem &memory) {
 		// execute <cycles> instructions in memory
@@ -102,22 +132,22 @@ struct CPU {
 			Byte instr = fetchbyte(cycles, memory);
 			switch(instr) {
 				case LDA: {
-					Byte val = fetchbyte(cycles, memory);
-					A = val;
-					Z = (A == 0);
-					N = (A & 0b10000000) > 0;
+					Byte M = fetchbyte(cycles, memory);
+					A = M;
+					Z = (M == 0);
+					N = (M & 0b10000000) > 0;
 				} break;
 				case LDX: {
-					Byte val = fetchbyte(cycles, memory);
-					X = val;
-					Z = (A == 0);
-					N = (A & 0b10000000) > 0;
+					Byte M = fetchbyte(cycles, memory);
+					X = M;
+					Z = (M == 0);
+					N = (M & 0b10000000) > 0;
 				} break;
 				case LDY: {
-					Byte val = fetchbyte(cycles, memory);
-					Y = val;
-					Z = (A == 0);
-					N = (A & 0b10000000) > 0;
+					Byte M = fetchbyte(cycles, memory);
+					Y = M;
+					Z = (M == 0);
+					N = (M & 0b10000000) > 0;
 				} break;
 				case TSX: {
 					Byte val = fetchbyte(cycles, memory);
@@ -143,8 +173,14 @@ struct CPU {
 					I = 0;
 					// printf("%d\n", I); testing code
 				} break;
+				case CLV: {
+					// printf("%d\n", V); testing code
+					Byte val = fetchbyte(cycles, memory);
+					V = 0;
+					// printf("%d\n", V); testing code
+				} break;
 				default: {
-					printf("Instruction not handled: %d", instr);
+					printf("Instruction not handled: %d\n; Located at: %x\n", instr, cycles + 0x1000);
 					cycles = 0;
 				} break;
 			}
