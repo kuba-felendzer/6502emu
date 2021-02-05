@@ -4,6 +4,7 @@
 
 #define MAX_MEM 65536
 // MAX_MEM = 1024 * 64
+#define instruction static constexpr Byte
 
 // https://www.obelisk.me.uk/6502
 
@@ -84,11 +85,15 @@ struct CPU {
 		return data;
 	}
 
-	static constexpr Byte LDA = 0xA9;
-	static constexpr Byte LDX = 0xA2;
-	static constexpr Byte LDY = 0xA0;
+	instruction LDA = 0xA9;
+	instruction LDX = 0xA2;
+	instruction LDY = 0xA0;
 	// stack pointer operations
-	static constexpr Byte TSX = 0xBA;
+	instruction TSX = 0xBA;
+	// flag operation
+	instruction CLC = 0x18;
+	instruction CLD = 0xD8;
+	instruction CLI = 0x58;
 
 	void exec(u32 cycles, Mem &memory) {
 		// execute <cycles> instructions in memory
@@ -120,9 +125,27 @@ struct CPU {
 					Z = (A == 0);
 					N = (A & 0b10000000) > 0;
 				} break;
+				case CLC: {
+					// printf("%d\n", C); testing code
+					Byte val = fetchbyte(cycles, memory);
+					C = 0;
+					// printf("%d\n", C); testing code
+				} break;
+				case CLD: {
+					// printf("%d\n", D); testing code
+					Byte val = fetchbyte(cycles, memory);
+					D = 0;
+					// printf("%d\n", D); testing code
+				} break;
+				case CLI: {
+					// printf("%d\n", I); testing code
+					Byte val = fetchbyte(cycles, memory);
+					I = 0;
+					// printf("%d\n", I); testing code
+				} break;
 				default: {
 					printf("Instruction not handled: %d", instr);
-				}
+				} cycles++;
 			}
 		}
 	}
