@@ -85,6 +85,8 @@ struct CPU {
 	}
 
 	static constexpr Byte LDA = 0xA9;
+	static constexpr Byte LDX = 0xA2;
+	static constexpr Byte LDY = 0xA0;
 	// stack pointer operations
 	static constexpr Byte TSX = 0xBA;
 
@@ -97,6 +99,18 @@ struct CPU {
 				case LDA: {
 					Byte val = fetchbyte(cycles, memory);
 					A = val;
+					Z = (A == 0);
+					N = (A & 0b10000000) > 0;
+				} break;
+				case LDX: {
+					Byte val = fetchbyte(cycles, memory);
+					X = val;
+					Z = (A == 0);
+					N = (A & 0b10000000) > 0;
+				} break;
+				case LDY: {
+					Byte val = fetchbyte(cycles, memory);
+					Y = val;
 					Z = (A == 0);
 					N = (A & 0b10000000) > 0;
 				} break;
