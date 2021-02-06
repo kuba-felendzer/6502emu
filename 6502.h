@@ -153,7 +153,7 @@ struct CPU {
 					N = (M & 0b10000000) > 0;
 				} break;
 				case TSX: {
-					Byte val = fetchbyte(cycles, memory);
+					Byte val = readbyte(cycles, memory);
 					X = this -> SP;
 					Z = (A == 0);
 					N = (A & 0b10000000) > 0;
@@ -189,7 +189,7 @@ struct CPU {
 					N = (fart & 0b10000000) > 0;
 				} break;
 				case INY: {
-					X += 1;
+					Y += 1;
 					Byte fart = fetchbyte(cycles, memory);
 					Z = (fart == 0);
 					N = (fart & 0b10000000) > 0;
