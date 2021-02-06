@@ -205,7 +205,7 @@ struct CPU {
 					N = (fart & 0b10000000) > 0;
 				} break;
 				case NOP: {
-					cycles += 2;
+					readbyte(cycles, memory);
 				} break;
 				default: {
 					printf("Instruction not handled: %d\n; Located at: %x\n", instr, cycles + 0x1000);
