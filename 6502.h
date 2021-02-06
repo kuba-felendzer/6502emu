@@ -128,6 +128,8 @@ struct CPU {
 	instruction CLD = 0xD8;
 	instruction CLI = 0x58;
 	instruction CLV = 0xB8;
+	// NOP lol
+	instruction NOP = 0xEA;
 
 	void exec(u32 cycles, Mem &memory, Byte startpos) {
 		PC = startpos;
@@ -201,6 +203,9 @@ struct CPU {
 					Byte fart = readbyte(cycles, memory);
 					Z = (fart == 0);
 					N = (fart & 0b10000000) > 0;
+				} break;
+				case NOP: {
+					cycles += 2;
 				} break;
 				default: {
 					printf("Instruction not handled: %d\n; Located at: %x\n", instr, cycles + 0x1000);
