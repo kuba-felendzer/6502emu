@@ -160,37 +160,37 @@ struct CPU {
 				} break;
 				case CLC: {
 					// printf("%d\n", C); testing code
-					Byte val = fetchbyte(cycles, memory);
+					Byte val = readbyte(cycles, memory);
 					C = 0;
 					// printf("%d\n", C); testing code
 				} break;
 				case CLD: {
 					// printf("%d\n", D); testing code
-					Byte val = fetchbyte(cycles, memory);
+					Byte val = readbyte(cycles, memory);
 					D = 0;
 					// printf("%d\n", D); testing code
 				} break;
 				case CLI: {
 					// printf("%d\n", I); testing code
-					Byte val = fetchbyte(cycles, memory);
+					Byte val = readbyte(cycles, memory);
 					I = 0;
 					// printf("%d\n", I); testing code
 				} break;
 				case CLV: {
 					// printf("%d\n", V); testing code
-					Byte val = fetchbyte(cycles, memory);
+					Byte val = readbyte(cycles, memory);
 					V = 0;
 					// printf("%d\n", V); testing code
 				} break;
 				case INX: {
 					X += 1;
-					Byte fart = fetchbyte(cycles, memory);
+					Byte fart = readbyte(cycles, memory);
 					Z = (fart == 0);
 					N = (fart & 0b10000000) > 0;
 				} break;
 				case INY: {
 					Y += 1;
-					Byte fart = fetchbyte(cycles, memory);
+					Byte fart = readbyte(cycles, memory);
 					Z = (fart == 0);
 					N = (fart & 0b10000000) > 0;
 				} break;
