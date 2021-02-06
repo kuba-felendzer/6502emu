@@ -102,6 +102,7 @@ struct CPU {
 
 	Byte readbyte(u32 &cycles, Mem memory) {
 		Byte jumpto = memory[PC];
+		PC++;
 		Byte data = memory[jumpto];
 		cycles--;
 		return data;
@@ -121,12 +122,17 @@ struct CPU {
 	instruction INX = 0xE8;
 	instruction INY = 0xC8;
 	// stack pointer operations
-	instruction TSX = 0xBA;
+	// instruction TSX = 0xBA; buggy, will reimplement later
 	// flag operation
 	instruction CLC = 0x18;
 	instruction CLD = 0xD8;
 	instruction CLI = 0x58;
 	instruction CLV = 0xB8;
+
+	void exec(u32 cycles, Mem &memory, Byte startpos) {
+		PC = startpos;
+		exec(cycles, memory);
+	}
 
 	void exec(u32 cycles, Mem &memory) {
 		// execute <cycles> instructions in memory
@@ -152,12 +158,14 @@ struct CPU {
 					Z = (M == 0);
 					N = (M & 0b10000000) > 0;
 				} break;
+				/*
 				case TSX: {
 					Byte val = readbyte(cycles, memory);
-					X = this -> SP;
+					X = (Byte) SP;
 					Z = (A == 0);
 					N = (A & 0b10000000) > 0;
 				} break;
+				*/
 				case CLC: {
 					// printf("%d\n", C); testing code
 					Byte val = readbyte(cycles, memory);
