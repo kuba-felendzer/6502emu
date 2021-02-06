@@ -117,6 +117,9 @@ struct CPU {
 	instruction LDA = 0xA9;
 	instruction LDX = 0xA2;
 	instruction LDY = 0xA0;
+	// register modification
+	instruction INX = 0xE8;
+	instruction INY = 0xC8;
 	// stack pointer operations
 	instruction TSX = 0xBA;
 	// flag operation
@@ -178,6 +181,18 @@ struct CPU {
 					Byte val = fetchbyte(cycles, memory);
 					V = 0;
 					// printf("%d\n", V); testing code
+				} break;
+				case INX: {
+					X += 1;
+					Byte fart = fetchbyte(cycles, memory);
+					Z = (fart == 0);
+					N = (fart & 0b10000000) > 0;
+				} break;
+				case INY: {
+					X += 1;
+					Byte fart = fetchbyte(cycles, memory);
+					Z = (fart == 0);
+					N = (fart & 0b10000000) > 0;
 				} break;
 				default: {
 					printf("Instruction not handled: %d\n; Located at: %x\n", instr, cycles + 0x1000);
